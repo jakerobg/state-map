@@ -3,23 +3,63 @@ const tooltip = document.getElementById("tooltip");
 const tooltipLabel = document.getElementById("tooltip-label");
 const tooltipStats = document.getElementById("tooltip-stats");
 
-//storing state data
-const stateData = [];
-// fast lookup map keyed by state abbreviation for O(1) hover lookups
 const stateMap = new Map();
+let pageData = [
+  ["AL", false],
+  ["AK", true],
+  ["AZ", true],
+  ["AR", false],
+  ["CA", true],
+  ["CO", true],
+  ["CT", true],
+  ["DE", false],
+  ["DC", false],
+  ["FL", true],
+  ["GA", true],
+  ["HI", true],
+  ["ID", false],
+  ["IL", false],
+  ["IN", false],
+  ["IA", false],
+  ["KS", false],
+  ["KY", false],
+  ["LA", false],
+  ["ME", false],
+  ["MD", false],
+  ["MA", true],
+  ["MI", false],
+  ["MN", false],
+  ["MS", false],
+  ["MO", false],
+  ["MT", true],
+  ["NE", false],
+  ["NV", true],
+  ["NH", true],
+  ["NJ", false],
+  ["NM", true],
+  ["NY", true],
+  ["NC", true],
+  ["ND", false],
+  ["OH", false],
+  ["OK", false],
+  ["OR", false],
+  ["PA", false],
+  ["RI", true],
+  ["SC", false],
+  ["SD", false],
+  ["TN", false],
+  ["TX", true],
+  ["UT", true],
+  ["VT", true],
+  ["VA", true],
+  ["WA", false],
+  ["WV", false],
+  ["WI", false],
+  ["WY", false]
+];
 
-const filledColor = "rgba(38, 142, 190, 1)";
-const unfilledColor = "rgba(232, 232, 232, 1)";
-
-/**
- * converts the percentage attribute to a rgb for CSS fill value based on start and end ranges
- */
-function percentageToColor(percentage) {
-    const diffRed = Math.round(252 + (0 - 249) * percentage * 0.01);
-    const diffGreen = Math.round(252 + (104 - 249) * percentage * 0.01);
-    const diffBlue = Math.round(252 + (154 - 249) * percentage * 0.01);
-    return `rgb(${diffRed}, ${diffGreen}, ${diffBlue})`;
-}
+const filledColor = "#EAF2F6";
+const unfilledColor = "rgba(242, 242, 242, 1)";
 
 /**
  * fills each state based on percentage AND stores in state data
@@ -35,16 +75,17 @@ async function stateFill() {
         })
         //same as await response - returned from fetch
         .then((data) => {
-            data.forEach((state) => {
+
+            data.forEach((state, index) => {
                 const path = document.getElementById(state.abbreviation);
                 if (path) {
                     //if state page (percentage > 0) use filledColor else unfilledColor
-                    let fillColor = state.percentage > 0 ? filledColor : unfilledColor;
+                    let fillColor = pageData[index][1] ? filledColor : unfilledColor;
                     
                     path.setAttribute("fill", fillColor);
 
                     const anchor = path.closest("a");
-                    if (state.percentage > 0) {
+                    if (pageData[index][1]) {
                         const url = `https://www.zoningatlas.org/${state.state.toLowerCase()}`.replace(" ","");
                         anchor.setAttribute("href", url);
                     }
@@ -54,6 +95,7 @@ async function stateFill() {
                         anchor.style.pointerEvents = "none"; // disable pointer events
                     }
                 }
+                else console.log("no path for ", state.abbreviation);
 
                 // also populate fast lookup map
                 stateMap.set(state.abbreviation, {state: state.state, percentage: state.percentage});
