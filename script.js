@@ -86,7 +86,7 @@ async function stateFill() {
 
                     const anchor = path.closest("a");
                     if (pageData[index][1]) {
-                        const url = `https://www.zoningatlas.org/${state.state.toLowerCase()}`.replace(" ","");
+                        const url = `https://www.zoningatlas.org/${state.state.toLowerCase()}`.replace(" ","-");
                         anchor.setAttribute("href", url);
                     }
                     else {
