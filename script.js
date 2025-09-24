@@ -123,7 +123,7 @@ document.querySelectorAll("svg path").forEach((path) => {
         tooltipLabel.textContent = state.state;
         tooltipStats.textContent = `${state.percentage}% finished`;
 
-        //tooltip.style.display = "block";
+        tooltip.style.display = "block";
     });
 
     path.addEventListener("mousemove", (event) => {
