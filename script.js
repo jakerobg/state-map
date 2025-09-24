@@ -5,6 +5,11 @@ const tooltipStats = document.getElementById("tooltip-stats");
 
 //storing state data
 const stateData = [];
+// fast lookup map keyed by state abbreviation for O(1) hover lookups
+const stateMap = new Map();
+
+const filledColor = "rgba(38, 142, 190, 1)";
+const unfilledColor = "rgba(232, 232, 232, 1)";
 
 /**
  * converts the percentage attribute to a rgb for CSS fill value based on start and end ranges
@@ -14,17 +19,6 @@ function percentageToColor(percentage) {
     const diffGreen = Math.round(252 + (104 - 249) * percentage * 0.01);
     const diffBlue = Math.round(252 + (154 - 249) * percentage * 0.01);
     return `rgb(${diffRed}, ${diffGreen}, ${diffBlue})`;
-}
-
-function stateFillAlt() {
-    localData.forEach((state) => {
-        const path = document.getElementById(state.abbreviation);
-
-        if (path) {
-            const fillColor = percentageToColor(state.percentage);
-            path.setAttribute("fill", fillColor);
-        }
-    });
 }
 
 /**
@@ -43,19 +37,26 @@ async function stateFill() {
         .then((data) => {
             data.forEach((state) => {
                 const path = document.getElementById(state.abbreviation);
-
                 if (path) {
-                    const fillColor = percentageToColor(state.percentage);
+                    //if state page (percentage > 0) use filledColor else unfilledColor
+                    let fillColor = state.percentage > 0 ? filledColor : unfilledColor;
+                    
                     path.setAttribute("fill", fillColor);
+
+                    const anchor = path.closest("a");
+                    if (state.percentage > 0) {
+                        const url = `https://www.zoningatlas.org/${state.state.toLowerCase()}`.replace(" ","");
+                        anchor.setAttribute("href", url);
+                    }
+                    else {
+                        // remove any existing href for states with 0%
+                        anchor.removeAttribute("href");
+                        anchor.style.pointerEvents = "none"; // disable pointer events
+                    }
                 }
-                //STORE
-                stateData.push({
-                    state: state.state,
-                    abbreviation: state.abbreviation,
-                    percentage: state.percentage,
-                    published_jurisdictions: state.published_jurisdictions,
-                    total_jurisdictions: state.total_jurisdictions,
-                });
+
+                // also populate fast lookup map
+                stateMap.set(state.abbreviation, {state: state.state, percentage: state.percentage});
             });
         })
         .catch((error) => {
@@ -64,29 +65,23 @@ async function stateFill() {
 }
 
 //SEARCHES STATE DATA FOR MATCHING STATE (slow but works)
+// fast O(1) lookup by abbreviation using Map
 function getState(abb) {
-    var returnState = {
-        state: "",
-        percentage: 0,
-        abbreviation: "",
-    };
-    stateData.forEach((state) => {
-        if (state.abbreviation == abb) {
-            returnState = state;
-        }
-    });
+    const found = stateMap.get(abb);
+    if (found) return found;
 
-    return returnState;
+    // fallback: return a safe default while data is loading or missing
+    return { state: "", percentage: 0, abbreviation: abb };
 }
 
 //TOOLTIP
 document.querySelectorAll("svg path").forEach((path) => {
     path.addEventListener("mouseenter", (event) => {
         const state = getState(event.target.getAttribute("id"));
-        tooltipLabel.textContent = `${state.state}:`;
-        tooltipStats.textContent = `${state.published_jurisdictions}/${state.total_jurisdictions} published (${state.percentage}%)`;
+        tooltipLabel.textContent = state.state;
+        tooltipStats.textContent = `${state.percentage}% finished`;
 
-        tooltip.style.display = "block";
+        //tooltip.style.display = "block";
     });
 
     path.addEventListener("mousemove", (event) => {

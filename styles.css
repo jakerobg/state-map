@@ -77,14 +77,14 @@
 }
 
 .state:hover {
-    filter: brightness(1.1) drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
+    filter: brightness(1.05) drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
 }
 
 .tooltip {
     display: flex;
     position: absolute;
     background-color: rgba(249, 249, 249, 1);
-    padding: 10px 30px;
+    padding: 10px 20px;
     border-radius: 1px;
     filter: drop-shadow(5px 5px 2px rgb(0, 0, 0, 0.2));
     display: none;
@@ -102,9 +102,9 @@
 .tooltip-stats {
     color: #515151;
     font-family: "Bebas Neue", sans-serif;
-    font-weight: 400;
+    font-weight: 200;
     font-style: normal;
-    font-size: xx-large;
+    font-size: 25px;
 }
 
 .stats-container {
