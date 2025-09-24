@@ -46,11 +46,31 @@
     font-weight: 400;
     color: #575757;
     font-style: normal;
-    font-size: 190%;
+    font-size:large;
     padding-top: 10px;
     text-align: center;
     margin: auto;
 }
+.map-title-alt {
+  font-family: 'Bebas Neue', sans-serif;
+  color: #575757;
+  width: 100%;
+  text-align: center;
+  padding-top: 10px;
+
+  /* responsive size: don't go below 14px, scale with viewport, cap at 36px */
+  font-size: clamp(14px, 2.8vw, 36px);
+
+  /* allow wrapping on very small widths */
+  white-space: normal;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+@media (min-width: 900px) {
+  /* optional: slightly larger on big screens */
+  .map-title { font-size: clamp(18px, 1.6vw, 44px); }
+}
+
 .svg-container {
     width: 100%;
     height: 100%;
