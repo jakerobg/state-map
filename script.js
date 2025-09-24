@@ -59,7 +59,7 @@ let pageData = [
 ];
 
 const filledColor = "#EAF2F6";
-const unfilledColor = "rgba(242, 242, 242, 1)";
+const unfilledColor = "rgba(250, 250, 250, 1)";
 
 /**
  * fills each state based on percentage AND stores in state data
