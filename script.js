@@ -121,7 +121,7 @@ document.querySelectorAll("svg path").forEach((path) => {
     path.addEventListener("mouseenter", (event) => {
         const state = getState(event.target.getAttribute("id"));
         tooltipLabel.textContent = state.state;
-        tooltipStats.textContent = `${state.percentage}% finished`;
+        tooltipStats.textContent = `${state.percentage}% published`;
 
         tooltip.style.display = "block";
     });
