@@ -5,57 +5,57 @@ const tooltipStats = document.getElementById("tooltip-stats");
 
 const stateMap = new Map();
 let pageData = [
-  ["AL", false],
-  ["AK", true],
-  ["AZ", true],
-  ["AR", false],
-  ["CA", true],
-  ["CO", true],
-  ["CT", true],
-  ["DE", false],
-  ["DC", false],
-  ["FL", true],
-  ["GA", true],
-  ["HI", true],
-  ["ID", false],
-  ["IL", false],
-  ["IN", false],
-  ["IA", false],
-  ["KS", false],
-  ["KY", false],
-  ["LA", true],
-  ["ME", true],
-  ["MD", true],
-  ["MA", true],
-  ["MI", true],
-  ["MN", true],
-  ["MS", false],
-  ["MO", false],
-  ["MT", true],
-  ["NE", false],
-  ["NV", true],
-  ["NH", true],
-  ["NJ", false],
-  ["NM", true],
-  ["NY", true],
-  ["NC", true],
-  ["ND", false],
-  ["OH", false],
-  ["OK", false],
-  ["OR", false],
-  ["PA", true],
-  ["RI", true],
-  ["SC", false],
-  ["SD", false],
-  ["TN", true],
-  ["TX", true],
-  ["UT", true],
-  ["VT", true],
-  ["VA", true],
-  ["WA", true],
-  ["WV", false],
-  ["WI", false],
-  ["WY", true]
+    ["AL", false],
+    ["AK", true],
+    ["AZ", true],
+    ["AR", false],
+    ["CA", true],
+    ["CO", true],
+    ["CT", true],
+    ["DE", false],
+    ["DC", false],
+    ["FL", true],
+    ["GA", true],
+    ["HI", true],
+    ["ID", false],
+    ["IL", false],
+    ["IN", false],
+    ["IA", false],
+    ["KS", false],
+    ["KY", false],
+    ["LA", true],
+    ["ME", true],
+    ["MD", true],
+    ["MA", true],
+    ["MI", true],
+    ["MN", true],
+    ["MS", false],
+    ["MO", false],
+    ["MT", true],
+    ["NE", false],
+    ["NV", true],
+    ["NH", true],
+    ["NJ", false],
+    ["NM", true],
+    ["NY", true],
+    ["NC", true],
+    ["ND", false],
+    ["OH", false],
+    ["OK", false],
+    ["OR", false],
+    ["PA", true],
+    ["RI", true],
+    ["SC", false],
+    ["SD", false],
+    ["TN", true],
+    ["TX", true],
+    ["UT", true],
+    ["VT", true],
+    ["VA", true],
+    ["WA", true],
+    ["WV", false],
+    ["WI", false],
+    ["WY", true],
 ];
 
 const filledColor = "#EAF2F6";
@@ -75,30 +75,36 @@ async function stateFill() {
         })
         //same as await response - returned from fetch
         .then((data) => {
-
             data.forEach((state, index) => {
                 const path = document.getElementById(state.abbreviation);
                 if (path) {
                     //if state page (percentage > 0) use filledColor else unfilledColor
-                    let fillColor = pageData[index][1] ? filledColor : unfilledColor;
-                    
+                    let fillColor = pageData[index][1]
+                        ? filledColor
+                        : unfilledColor;
+
                     path.setAttribute("fill", fillColor);
 
                     const anchor = path.closest("a");
                     if (pageData[index][1]) {
-                        const url = `https://www.zoningatlas.org/${state.state.toLowerCase()}`.replace(" ","-");
+                        const url =
+                            `https://www.zoningatlas.org/${state.state.toLowerCase()}`.replace(
+                                " ",
+                                "-"
+                            );
                         anchor.setAttribute("href", url);
-                    }
-                    else {
+                    } else {
                         // remove any existing href for states with 0%
                         anchor.removeAttribute("href");
                         anchor.style.pointerEvents = "none"; // disable pointer events
                     }
-                }
-                else console.log("no path for ", state.abbreviation);
+                } else console.log("no path for ", state.abbreviation);
 
                 // also populate fast lookup map
-                stateMap.set(state.abbreviation, {state: state.state, percentage: state.percentage});
+                stateMap.set(state.abbreviation, {
+                    state: state.state,
+                    percentage: state.percentage,
+                });
             });
         })
         .catch((error) => {
